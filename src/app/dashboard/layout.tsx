@@ -67,7 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 videoConstraints={videoConstraints}
               />
               <div className="flex gap-2">
-                <Button onClick={capture} variant="primary">
+                <Button onClick={capture} variant="secondary">
                   Take Photo
                 </Button>
                 <Button onClick={() => setIsCapturing(false)} variant="secondary">
