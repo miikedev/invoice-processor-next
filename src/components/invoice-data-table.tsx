@@ -41,7 +41,7 @@ const InvoiceDataTable = ({ data }: InvoiceDataTableProps) => {
           <TableHead>Quantity</TableHead>
           <TableHead>Unit</TableHead>
           <TableHead>Price/Unit</TableHead>
-          <TableHead className="text-right">Line Total</TableHead>
+          <TableHead className="text-right">Total</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
