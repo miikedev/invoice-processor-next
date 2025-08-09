@@ -13,7 +13,7 @@ const InvoicesPage = async () => {
     <div className='flex justify-end'>
     <DatePicker />
     </div>
-    <InvoiceDataTable data={data.items} />
+    <InvoiceDataTable data={data} />
     </>
 }
 

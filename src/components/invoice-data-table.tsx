@@ -45,8 +45,8 @@ const InvoiceDataTable = ({ data }: InvoiceDataTableProps) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data?.length > 0 ? (
-          data.map((item, index) => (
+        {data.items?.length > 0 ? (
+          data.items.map((item, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium">{item.product_name}</TableCell>
               <TableCell>{item.package_details}</TableCell>
