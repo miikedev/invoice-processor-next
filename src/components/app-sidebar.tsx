@@ -148,11 +148,11 @@ const data = {
             url: "/dashboard/invoices",
             icon: Frame,
         },
-        {
-            name: "Travel",
-            url: "#",
-            icon: Map,
-        },
+        // {
+        //     name: "Travel",
+        //     url: "#",
+        //     icon: Map,
+        // },
     ],
 }
 

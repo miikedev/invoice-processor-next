@@ -45,3 +45,4 @@ next-env.d.ts
 
 # Google credentials
 src/voucher-text-extract.json
+.env*.local

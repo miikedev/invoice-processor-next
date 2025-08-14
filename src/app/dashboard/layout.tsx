@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React, { useRef, useState, useCallback } from "react";
 import Webcam from "react-webcam";
@@ -14,86 +14,44 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const webcamRef = useRef<Webcam>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
+  // Upload blob to API
   const onUpload = useCallback(async (blob: Blob) => {
-    console.log("Uploading photo blob...", blob);
-    // Your upload logic here
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append("image", blob, "capture.jpg");
+
+      // const res = await fetch("/api/extract-text", {
+      //   method: "POST",
+      //   body: formData,
+      // });
+
+      // const data = await res.json();
+      // console.log("Upload response:", data);
+      alert("Upload complete! Check console for server response.");
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Upload failed.");
+    } finally {
+      setIsUploading(false);
+    }
   }, []);
 
+  // Take screenshot
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) {
       setPhoto(imageSrc);
       setIsCapturing(false);
-
       fetch(imageSrc)
         .then((res) => res.blob())
-        .then((blob) => {
-          onUpload(blob);
-        });
+        .then((blob) => onUpload(blob));
     }
   }, [onUpload]);
 
   return (
-    // <SidebarProvider>
-    //   <AppSidebar />
-    //   <SidebarInset>
-    //         {/* <SignedIn>
-    //           <UserButton />
-    //           </SignedIn> */}
-    //     <header className="flex h-0 shrink-0 items-center justify-between w-full gap-2 px-4 border-b">
-    //       <SidebarTrigger className="-ml-1" />
-    //       {/* {!isCapturing && !photo && (
-    //         <Button
-    //           aria-label="Open camera"
-    //           variant="secondary"
-    //           size="icon"
-    //           onClick={() => {
-    //             setIsCapturing(true);
-    //             setPhoto(null);
-    //           }}
-    //           className="p-3"
-    //         >
-    //           <CameraIcon size={24} />
-    //         </Button>
-    //       )} */}
-    //     </header>
-
-    //     {/* <div className="flex flex-col flex-1 gap-4 p-4">
-    //       {isCapturing && (
-    //         <div className="flex flex-col items-center gap-4">
-    //           <Webcam
-    //             audio={false}
-    //             height={320}
-    //             ref={webcamRef}
-    //             screenshotFormat="image/jpeg"
-    //             width={320}
-    //             videoConstraints={videoConstraints}
-    //           />
-    //           <div className="flex gap-2">
-    //             <Button onClick={capture} variant="secondary">
-    //               Take Photo
-    //             </Button>
-    //             <Button onClick={() => setIsCapturing(false)} variant="secondary">
-    //               Cancel
-    //             </Button>
-    //           </div>
-    //         </div>
-    //       )}
-
-    //       {photo && (
-    //         <div className="flex flex-col items-center gap-4">
-    //           <img src={photo} alt="Captured" className="rounded" />
-    //           <Button onClick={() => setPhoto(null)} variant="secondary">
-    //             Retake
-    //           </Button>
-    //         </div>
-    //       )}
-
-    //       {!isCapturing && !photo && <>{children}</>}
-    //     </div> */}
-    //   </SidebarInset>
-    // </SidebarProvider>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -103,33 +61,54 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <SignedIn>
               <UserButton />
             </SignedIn>
-            {/* <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb> */}
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" /> */}
-          {children}
+
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 relative">
+          {isCapturing && (
+            <div className="flex flex-col items-center gap-4">
+              <Webcam
+                audio={false}
+                height={320}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                width={320}
+                videoConstraints={videoConstraints}
+              />
+              <div className="flex gap-2">
+                <Button onClick={capture} disabled={isUploading} variant="secondary">
+                  {isUploading ? "Uploading..." : "Take Photo"}
+                </Button>
+                <Button onClick={() => setIsCapturing(false)} variant="secondary">
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {photo && !isCapturing && (
+            <div className="flex flex-col items-center gap-4">
+              <img src={photo} alt="Captured" className="rounded max-w-xs" />
+              <Button onClick={() => { setPhoto(null); setIsCapturing(true); }} variant="secondary">
+                Retake
+              </Button>
+            </div>
+          )}
+
+          {!isCapturing && !photo && children}
+
+          {/* Floating Camera Button */}
+          {!isCapturing && (
+            <Button
+              className="absolute bottom-6 right-6 p-5 rounded-full"
+              onClick={() => {
+                setIsCapturing(true);
+                setPhoto(null);
+              }}
+            >
+              <CameraIcon />
+            </Button>
+          )}
         </div>
       </SidebarInset>
     </SidebarProvider>
