@@ -1,0 +1,69 @@
+import { GoogleGenAI } from "@google/genai";
+
+const ai = new GoogleGenAI({ apiKey: process.env.GENAI_API_KEY });
+
+export const genai = async (text: string) => {
+    try {
+        const prompt = `Extract the invoice items from the following text and format them as a JSON array:\n\n${text}`;
+
+        const generationConfig = {
+            responseMimeType: "application/json",
+            responseSchema: {
+                type: "object",
+                properties: {
+                    items: {
+                        type: "array",
+                        description: "List of voucher line items",
+                        items: {
+                            type: "object",
+                            properties: {
+                                product_name: { type: "string" },
+                                package_details: { type: "string" },
+                                quantity: { type: "number" },
+                                unit: { type: "string" },
+                                price_per_unit: { type: "number" },
+                                line_total: { type: "number" }
+                            },
+                            required: [
+                                "product_name",
+                                "package_details",
+                                "quantity",
+                                "unit",
+                                "price_per_unit",
+                                "line_total"
+                            ],
+                            propertyOrdering: [
+                                "product_name",
+                                "package_details",
+                                "quantity",
+                                "unit",
+                                "price_per_unit",
+                                "line_total"
+                            ]
+                        }
+                    },
+                    total_amount: {
+                        type: "number",
+                        description: "Final total amount (စုစုပေါင်းကျသင့်ငွေ), MMK"
+                    }
+                },
+                required: ["items", "total_amount"],
+                propertyOrdering: ["items", "total_amount"]
+            }
+        };
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: text,
+            config: generationConfig
+        });
+
+        // Parse text response into JSON
+        const json = JSON.parse(response.text);
+        return json;
+
+    } catch (error) {
+        console.error("GenAI error:", error);
+        throw error;
+    }
+};

@@ -1,3 +1,5 @@
+import { genai } from '@/utils/genai';
+import { processInvoiceTest } from '@/utils/procecss-invoice';
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 
@@ -8,14 +10,23 @@ export async function POST(request: Request): Promise<NextResponse> {
     // ⚠️ The below code is for App Router Route Handlers only
     const blob = await put(`invoices/${filename}`, request.body, {
         access: 'public',
+        addRandomSuffix: true,
     });
 
+    console.info('blob meta', blob)
+
+    const ocrText = await processInvoiceTest(blob.url);
+
+    console.log('ocr text', ocrText)
+
+    const extractedData = await genai(ocrText)
     // Here's the code for Pages API Routes:
     // const blob = await put(filename, request, {
     //   access: 'public',
     // });
+    console.log('extracted data', extractedData)
 
-    return NextResponse.json(blob);
+    return NextResponse.json({ blob, extractedData });
 }
 
 // The next lines are required for Pages API Routes only

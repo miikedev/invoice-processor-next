@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   experimental: {
     useCache: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'u8265oajwhixhoup.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
