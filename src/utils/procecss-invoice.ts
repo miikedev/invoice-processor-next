@@ -2,13 +2,7 @@ const vision = require('@google-cloud/vision');
 
 // IMPORTANT: Parse the JSON credentials from the environment variable
 const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || '{}');
-const client = new vision.ImageAnnotatorClient({
-    credentials: {
-        client_email: credentials.client_email,
-        private_key: credentials.private_key,
-    },
-    projectId: credentials.project_id,
-});
+const client = new vision.ImageAnnotatorClient({ apiKey: process.env.GOOGLE_API_KEY });
 
 export const processInvoiceTest = async (imageUrl: string) => {
     console.log(`Processing invoice: ${imageUrl}`);
