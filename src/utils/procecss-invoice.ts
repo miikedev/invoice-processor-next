@@ -1,5 +1,9 @@
 const vision = require('@google-cloud/vision');
-const client = new vision.ImageAnnotatorClient();
+
+const credentials = JSON.parse(
+    Buffer.from(process.env.GOOGLE_CLOUD_KEY!, "base64").toString()
+);
+const client = new vision.ImageAnnotatorClient({ apiKey: process.env.GOOGLE_API_KEY });
 
 export const processInvoiceTest = async (imageUrl: string) => {
     console.log(`Processing invoice: ${imageUrl}`);
@@ -13,7 +17,7 @@ export const processInvoiceTest = async (imageUrl: string) => {
 
         const detections = result.textAnnotations;
         const ocrText = detections[0].description;
-
+        console.log('ocr text', ocrText)
         // 3. Return the extracted text
         return ocrText;
 
