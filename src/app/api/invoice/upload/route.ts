@@ -7,6 +7,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const { searchParams } = new URL(request.url);
     const filename = searchParams.get('filename') || `capture-${Date.now()}.jpg`;
 
+
     // Upload blob directly from request.body
     const blob: PutBlobResult = await put(`invoices/${filename}`, request.body!, {
         access: 'public',
