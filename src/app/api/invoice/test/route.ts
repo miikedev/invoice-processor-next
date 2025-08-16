@@ -6,7 +6,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const filename = searchParams.get('url');
 
     // ⚠️ The below code is for App Router Route Handlers only
-    const blob = await put(`invoices/${filename}`, request.body, {
+    const blob = await put(`invoices/${filename}`, request.body!, {
         access: 'public',
         addRandomSuffix: true,
     });

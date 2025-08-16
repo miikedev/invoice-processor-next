@@ -4,8 +4,10 @@ const ai = new GoogleGenAI({ apiKey: process.env.GENAI_API_KEY });
 
 export const genai = async (text: string) => {
     try {
-        const prompt = `Extract the invoice items from the following text and format them as a JSON array:\n\n${text}`;
+        // ✅ Combine your instructions and the input text into a single prompt
+        const fullPrompt = `Extract the invoice items from the following text and format them as a JSON array:\n\n---\n\n${text}`;
 
+        // The generation config with the schema remains the same. It's perfect.
         const generationConfig = {
             responseMimeType: "application/json",
             responseSchema: {
@@ -31,14 +33,6 @@ export const genai = async (text: string) => {
                                 "unit",
                                 "price_per_unit",
                                 "line_total"
-                            ],
-                            propertyOrdering: [
-                                "product_name",
-                                "package_details",
-                                "quantity",
-                                "unit",
-                                "price_per_unit",
-                                "line_total"
                             ]
                         }
                     },
@@ -47,23 +41,24 @@ export const genai = async (text: string) => {
                         description: "Final total amount (စုစုပေါင်းကျသင့်ငွေ), MMK"
                     }
                 },
-                required: ["items", "total_amount"],
-                propertyOrdering: ["items", "total_amount"]
+                required: ["items", "total_amount"]
             }
         };
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: text,
+            // ✅ Pass the combined prompt to the model
+            contents: fullPrompt,
             config: generationConfig
         });
 
-        // Parse text response into JSON
-        const json = JSON.parse(response.text);
-        return json;
+        // The response text is guaranteed to be a valid JSON string by the API
+        const extractedData = JSON.parse(response.text!);
+        return extractedData;
 
     } catch (error) {
-        console.error("GenAI error:", error);
+        console.error("GenAI extraction failed:", error);
+        // Re-throw the error so the calling function can handle it
         throw error;
     }
 };
