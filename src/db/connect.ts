@@ -1,5 +1,6 @@
 // db.ts
 import { MongoClient, Db } from "mongodb";
+import { revalidateTag } from "next/cache";
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
@@ -18,29 +19,6 @@ export async function connectToDB(): Promise<Db> {
     return db;
 }
 
-// Converts Mongo ObjectIDs and Dates to plain JSON-safe values
-function serialize(obj: any) {
-    return JSON.parse(
-        JSON.stringify(obj, (key, value) => {
-            if (value && typeof value === "object" && value._bsontype === "ObjectID") {
-                return value.toString();
-            }
-            if (value instanceof Date) {
-                return value.toISOString();
-            }
-            return value;
-        })
-    );
-}
-
-export async function getInvoiceData() {
-    const db = await connectToDB();
-    // Sort by the automatically generated _id in descending order and get the first one
-    const last_item = await db.collection("vouchers").findOne({}, { sort: { _id: -1 } });
-
-    if (!last_item) throw new Error("No invoice data found");
-    return serialize(last_item);
-}
 export async function insertInvoiceData(item: any) {
     try {
         console.log('payload in insert invoice data', item);
@@ -55,7 +33,7 @@ export async function insertInvoiceData(item: any) {
             created_at: new Date() // better to store a Date instead of a number
         });
 
-        console.log("Insert success:", result.insertedId);
+        revalidateTag("invoice");
 
         return { success: true, insertedId: result.insertedId };
     } catch (error: any) {

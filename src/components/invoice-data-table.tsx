@@ -10,27 +10,28 @@ import {
   TableRow
 } from "@/components/ui/table";
 
-interface InvoiceItem {
+// Each line item in the invoice
+export interface InvoiceItem {
   product_name: string;
-  package_details: string;
+  package_details?: string; // sometimes optional
   quantity: number;
-  unit: string;
+  unit?: string;            // might be optional too
   price_per_unit: number;
   line_total: number;
 }
 
-interface InvoiceData {
+// A single invoice
+export interface InvoiceData {
+  _id?: string;
+  created_at: Date;
   items: InvoiceItem[];
   total_amount: number;
 }
-
-interface InvoiceDataTableProps {
+interface InvoiceDataTableProps { 
   data: InvoiceData;
 }
 
-const InvoiceDataTable = ({ data }: InvoiceDataTableProps) => {
-  console.log("data in data table", data);
-
+const InvoiceDataTable = ({ data }: InvoiceDataTableProps) => { 
   return (
     <Table>
       <TableCaption>A list of your recent invoice items.</TableCaption>
