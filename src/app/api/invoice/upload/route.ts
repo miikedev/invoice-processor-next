@@ -10,7 +10,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     // Upload blob directly from request.body
     const blob: PutBlobResult = await put(`invoices/${filename}`, request.body!, {
-        access: 'public',
+        access: 'public',   
         addRandomSuffix: true,
     });
 

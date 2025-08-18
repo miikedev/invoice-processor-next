@@ -20,12 +20,11 @@ export interface InvoiceItem {
   line_total: number;
 }
 
-// A single invoice
 export interface InvoiceData {
-  _id?: string;
-  created_at: Date;
-  items: InvoiceItem[];
+  _id: string;
+  items: string[];
   total_amount: number;
+  created_at: string;
 }
 interface InvoiceDataTableProps { 
   data: InvoiceData;

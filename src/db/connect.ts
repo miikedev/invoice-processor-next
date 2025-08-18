@@ -21,16 +21,17 @@ export async function connectToDB(): Promise<Db> {
 
 export async function insertInvoiceData(item: any) {
     try {
-        console.log('payload in insert invoice data', item);
+        console.log("payload in insert invoice data", item);
 
         // Connect to DB
         const db = await connectToDB();
 
-        // Insert one document
-        const result = await db.collection("vouchers").insertOne({
+        // Directly insert — MongoDB auto-creates the collection if it doesn't exist
+        const result = await db.collection(`vouchers-${item.user_id}`).insertOne({
             items: item.items,
             total_amount: item.total_amount,
-            created_at: new Date() // better to store a Date instead of a number
+            user_id: item.user_id,
+            created_at: new Date(),
         });
 
         revalidateTag("invoice");
