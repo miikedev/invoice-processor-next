@@ -22,7 +22,7 @@ export interface InvoiceItem {
 
 export interface InvoiceData {
   _id: string;
-  items: string[];
+  items: InvoiceItem[];
   total_amount: number;
   created_at: string;
 }
