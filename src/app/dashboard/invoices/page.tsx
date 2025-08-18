@@ -38,7 +38,7 @@ const Invoice = async () => {
   if (!data) {
     return <p className="text-gray-500">No invoices found.</p>;
   }
-  
+
   return <InvoiceDataTable data={data} />;
 };
 

@@ -34,12 +34,15 @@ function isValidDate(date: Date | undefined) {
 
 export function DatePicker() {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(
-    new Date("2025-06-01")
-  )
+  const [date, setDate] = React.useState<Date | undefined>(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // reset time to midnight
+    return today;
+  });
   const [month, setMonth] = React.useState<Date | undefined>(date)
   const [value, setValue] = React.useState(formatDate(date))
 
+  console.log()
   return (
     <div className="flex flex-col gap-3">
       <div className="relative flex gap-2">
