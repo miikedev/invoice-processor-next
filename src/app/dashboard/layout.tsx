@@ -22,7 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </SignedIn>
         </header>
 
-        <ClientDashboardMain userId={userId}>{children}</ClientDashboardMain>
+        <ClientDashboardMain userId={userId!}>{children}</ClientDashboardMain>
       </SidebarInset>
     </SidebarProvider>
   );
