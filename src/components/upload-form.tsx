@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Loader } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useRef } from 'react';
 
 export default function UploadForm({userId} : {userId: string}) {
@@ -12,6 +13,7 @@ export default function UploadForm({userId} : {userId: string}) {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [url, setUrl] = useState<string | null>(null);
+    const router = useRouter()
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -62,6 +64,7 @@ export default function UploadForm({userId} : {userId: string}) {
             // You could also set an error state here to show a message to the user
         } finally {
             setIsLoading(false)
+            router.push('/dashboard/invoices');
         }
     };
 

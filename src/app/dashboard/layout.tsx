@@ -6,13 +6,15 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 import ClientDashboardMain from "@/components/client-dashboard-main";
 import { authUserIdAtom, useAtom } from "../store";
 import { auth } from "@clerk/nextjs/server";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth();
   
   return (
     // Provider is no longer needed here if your app has a root provider
-    <SidebarProvider>
+    <NuqsAdapter>
+      <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4">
@@ -24,6 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         <ClientDashboardMain userId={userId!}>{children}</ClientDashboardMain>
       </SidebarInset>
-    </SidebarProvider>
+      </SidebarProvider>
+    </NuqsAdapter>
   );
 }

@@ -31,6 +31,7 @@
     "mongodb": "^6.18.0",
     "mongoose": "^8.17.1",
     "next": "15.4.6",
+    "nuqs": "^2.4.3",
     "react": "19.1.0",
     "react-day-picker": "^9.8.1",
     "react-dom": "19.1.0",

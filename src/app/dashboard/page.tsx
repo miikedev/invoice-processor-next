@@ -1,8 +1,16 @@
-import React from 'react'
+"use client"
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const DasbhoardPage = () => {
+  const router = useRouter()
+  useEffect(() => 
+    router.push('/dashboard/invoices')
+  ,[])
   return (
-    <div>DasbhoardPage</div>
+    <div>
+      <h1 className='font-bold text-xl'>Welcome to Invoice Dashboard</h1>
+    </div>
   )
 }
 

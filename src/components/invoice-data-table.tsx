@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { formatDate } from "@/lib/utils";
 
 // Each line item in the invoice
 export interface InvoiceItem {
@@ -32,8 +33,12 @@ interface InvoiceDataTableProps {
 
 const InvoiceDataTable = ({ data }: InvoiceDataTableProps) => { 
   return (
+    <>
+    <div className="flex justify-end">
+      <h1 className="font-semibold text-sm">{formatDate(data.created_at)}</h1>
+    </div>
     <Table>
-      <TableCaption>A list of your recent invoice items.</TableCaption>
+      {/* <TableCaption>A list of your recent invoice items.</TableCaption> */}
       <TableHeader>
         <TableRow>
           <TableHead className="w-[250px]">Product Name</TableHead>
@@ -71,6 +76,7 @@ const InvoiceDataTable = ({ data }: InvoiceDataTableProps) => {
         </TableRow>
       </TableBody>
     </Table>
+    </>
   );
 };
 

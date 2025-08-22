@@ -1,6 +1,6 @@
 // db.ts
 import { MongoClient, Db } from "mongodb";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
@@ -18,6 +18,36 @@ export async function connectToDB(): Promise<Db> {
     }
     return db;
 }
+
+// Get all invoices for a user (optionally filter by date)
+export const getAllInvoices = async (userId: string, date?: Date | null) => {
+    const db = await connectToDB();
+
+    // If date is null, use current date (today)
+    const targetDate = date ? new Date(date) : new Date();
+
+    const startDate = new Date(targetDate);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(targetDate);
+    endDate.setHours(23, 59, 59, 999);
+
+    const filter: Record<string, any> = {
+        created_at: { $gte: startDate, $lte: endDate },
+    };
+
+    const documents = await db
+        .collection(`vouchers-${userId}`)
+        .find(filter)
+        .sort({ _id: -1 }) // newest first
+        .toArray();
+
+    return documents.map((doc) => ({
+        ...doc,
+        _id: doc._id.toString(),
+        created_at: doc.created_at.toISOString(),
+    }));
+};
 
 export async function insertInvoiceData(item: any) {
     try {
