@@ -54,7 +54,7 @@ const InvoiceDataTable = ({ data }: InvoiceDataTableProps) => {
           data.items.map((item, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium">{item.product_name}</TableCell>
-              <TableCell>{item.package_details}</TableCell>
+              <TableCell>{item.package_details == 'null' ? '' : item.package_details}</TableCell>
               <TableCell>{item.quantity}</TableCell>
               <TableCell>{item.unit}</TableCell>
               <TableCell>{Number(item.price_per_unit).toLocaleString()} Ks</TableCell>
