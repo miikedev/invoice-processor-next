@@ -22,9 +22,12 @@ export async function connectToDB(): Promise<Db> {
 // Get all invoices for a user (optionally filter by date)
 export const getAllInvoices = async (userId: string, date?: Date | null) => {
     const db = await connectToDB();
+    console.log('date in get all. invoices', date)
+    const parsed = date ? new Date(date) : null;
 
-    // If date is null, use current date (today)
-    const targetDate = date ? new Date(date) : new Date();
+    const targetDate = parsed && !isNaN(parsed.getTime())
+        ? parsed
+        : new Date();
 
     const startDate = new Date(targetDate);
     startDate.setHours(0, 0, 0, 0);
